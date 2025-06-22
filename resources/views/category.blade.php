@@ -49,6 +49,9 @@
             <img src="{{ $product->image_url }}" alt="{{ $product->name }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
             <h3>{{ $product->name }}</h3>
             <p>Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+            @if ($product->seller && $product->seller->sellerRequest && $product->seller->sellerRequest->status === 'approved')
+                <div class="store-name">{{ $product->seller->sellerRequest->store_name }}</div>
+            @endif
         </a>
     @empty
         <p>Tidak ada produk di kategori ini.</p>

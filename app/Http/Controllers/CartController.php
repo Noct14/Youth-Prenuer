@@ -1,170 +1,51 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use App\Models\Cart;
 use App\Models\CartItem;
-use App\Models\Product;
 
 class CartController extends Controller
 {
-
-    public function getCart()
+    public function addCart(Request $request)
     {
-        $user = Auth::user();
-        $cart = $user->cart()->with('items.product', 'items.options')->first();
-
-        if (!$cart || $cart->items->isEmpty()) {
-            return response()->json([
-                'message' => 'cart kosong',
-                'data' => []
-            ]);
-        }
-
-        $data = $cart->items->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'quantity' => $item->quantity,
-                'note' => $item->note,
-                'product_name' => $item->product->product_name ?? null,
-                'price' => $item->product->price ?? null,
-                'options' => $item->options->map(function ($opt) {
-                    return [
-                        'id' => $opt->id,
-                        'name' => $opt->name,
-                        'additional_price' => $opt->additional_price,
-                    ];
-                })
-            ];
-        });
-
-        return response()->json([
-            'message' => 'Berhasil ambil data cart',
-            'data' => $data
-        ]);
-    }
-
-    public function addToCart(Request $request)
-    {
-        $data = $request->validate([
+        $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
             'options' => 'array',
             'options.*' => 'exists:options,id',
-            'note' => 'nullable|string',
+            'quantity' => 'integer|min:1',
         ]);
 
         $user = auth()->user();
-        $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+        // $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+
+        $cart = Cart::firstOrCreate(['user_id' => 1]);// dummy id
 
         $cartItem = $cart->items()->create([
-            'product_id' => $data['product_id'],
-            'quantity' => $data['quantity'],
-            'note' => $data['note'] ?? null,
+            'product_id' => $request->product_id,
+            'quantity' => $request->quantity ?? 1,
         ]);
 
-        if (!empty($data['options'])) {
-            $cartItem->options()->attach($data['options']);
+        if ($request->filled('options')) {
+            $cartItem->options()->attach($request->options);
         }
 
-        return response()->json([
-            'message' => 'Produk berhasil ditambahkan ke keranjang',
-            'data' => $cartItem->load('options')
-        ]);
+        return redirect()->back()->with('success', 'Produk berhasil ditambahkan ke keranjang!');
     }
 
-    public function updateCartItem(Request $request, $id)
+    public function viewCart ()
     {
-        $data = $request->validate([
-            'quantity' => 'required|integer|min:1',
-            'note' => 'nullable|string',
-            'options' => 'array',
-            'options.*' => 'exists:options,id',
-        ]);
+        $cart = Cart::with(['items.product', 'items.options'])->where('user_id', 1)->first();
 
-        $user = auth()->user();
-
-        $cartItem = CartItem::whereHas('cart', function ($q) use ($user) {
-            $q->where('user_id', $user->id);
-        })->where('id', $id)->first();
-
-        if (!$cartItem) {
-            return response()->json(['message' => 'Item tidak ditemukan atau bukan milik user']);
-        }
-
-        $cartItem->update([
-            'quantity' => $data['quantity'],
-            'note' => $data['note'] ?? $cartItem->note,
-        ]);
-
-        if (isset($data['options'])) {
-            $cartItem->options()->sync($data['options']);
-        }
-
-        return response()->json([
-            'message' => 'Item cart berhasil diupdate',
-            'data' => $cartItem->load('options')
-        ]);
+        return view('cart', compact('cart'));
     }
 
-    public function removeFromCart($id)
+    public function remove(CartItem $item)
     {
-        $user = auth()->user();
-
-        $cartItem = CartItem::whereHas('cart', function ($q) use ($user) {
-            $q->where('user_id', $user->id);
-        })->find($id);
-
-        if (!$cartItem) {
-            return response()->json([
-                'message' => 'Item tidak ditemukan atau bukan milik user ini.'
-            ], 404);
-        }
-
-        $cartItem->delete();
-
-        $cart = $user->cart;
-        $items = $cart ? $cart->items()->with(['product', 'options'])->get() : collect();
-
-        $data = $items->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'product_name' => $item->product->product_name ?? null,
-                'price' => $item->product->price ?? null,
-                'quantity' => $item->quantity,
-                'note' => $item->note,
-                'options' => $item->options->map(function ($opt) {
-                    return [
-                        'id' => $opt->id,
-                        'name' => $opt->name,
-                        'additional_price' => $opt->additional_price
-                    ];
-                })
-            ];
-        });
-
-        return response()->json([
-            'message' => 'Item berhasil dihapus dari cart',
-            'data' => $data
-        ]);
+        $item->delete();
+        return back()->with('success', 'Item berhasil dihapus dari keranjang');
     }
 
 
 
-
-    public function clearCart()
-    {
-        $user = auth()->user();
-        $cart = $user->cart;
-
-        if ($cart) {
-            $cart->items()->delete();
-        }
-
-        return response()->json(['message' => 'Cart berhasil dikosongkan']);
-    }
 }

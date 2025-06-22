@@ -139,7 +139,9 @@
                     <div class="product-card-content">
                         <div class="product-card-title">{{ $product->product_name }}</div>
                         <div class="product-card-price">Rp. {{ number_format($product->price, 0, ',', '.') }}</div>
-                        <div class="product-card-store">{{ $product->seller_id->name }}</div>
+                        <div class="product-card-store">
+                            {{ optional($product->seller->sellerRequest)->status === 'approved' ? optional($product->seller->sellerRequest)->store_name : '' }}
+                        </div>
                     </div>
                 </a>
             @empty

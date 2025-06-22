@@ -26,7 +26,7 @@ class ProductController extends Controller
 
     public function detailProduct($id)
     {
-        $product = Product::with(['optionGroups.options'])->findOrFail($id);
+        $product = Product::with(['optionGroups.options', 'seller.sellerRequest'])->findOrFail($id);
         return view('product-detail', compact('product'));
     }
 
@@ -38,10 +38,10 @@ class ProductController extends Controller
             return view('search', ['products' => collect(), 'query' => '']);
         }
 
-        $products = Product::where('product_name', 'like', "%{$query}%")->get();
+        $products = Product::with('seller.sellerRequest')
+            ->where('product_name', 'like', "%{$query}%")
+            ->get();
 
         return view('search', compact('products', 'query'));
     }
-
-
 }

@@ -356,6 +356,7 @@
             header.classList.remove('collapsed');
         }
     }
+
 </script>
 
 <div class="product-detail-container">
@@ -366,29 +367,49 @@
     <div class="product-details-section">
         <h1>{{ $product->product_name }}</h1>
         <div class="price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-        <div class="store-name">Teh Tarik Kalten</div>
+        <div class="store-name">{{ $product->seller->sellerRequest->store_name }}</div>
 
-        <div class="options-row">
-            @if ($product->optionGroups && $product->optionGroups->isNotEmpty())
-                @foreach ($product->optionGroups as $group)
-                    <div class="option-row">
-                        <label>{{ $group->name }}</label>
-                        <select name="options[{{ $group->id }}]">
-                            <option value="">-- Tidak memilih {{ strtolower($group->name) }} --</option>
-                            @foreach ($group->options as $option)
-                                <option value="{{ $option->id }}">
-                                    {{ $option->name }} (+{{ number_format($option->additional_price, 0, ',', '.') }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                @endforeach
-            @endif
-        </div>
+        @if (session('success'))
+            <div class="alert alert-success" style="padding: 10px; margin-bottom: 10px; background-color: #d4edda; color: #155724;">
+                {{ session('success') }}
+            </div>
+        @endif
 
+        @if ($errors->any())
+            <div class="alert alert-danger" style="padding: 10px; margin-bottom: 10px; background-color: #f8d7da; color: #721c24;">
+                <ul style="margin: 0; padding-left: 20px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <form action="{{ route('cart.add') }}" method="POST">
+            @csrf
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
+            <input type="hidden" name="quantity" value="1">
 
+            <div class="options-row">
+                @if ($product->optionGroups && $product->optionGroups->isNotEmpty())
+                    @foreach ($product->optionGroups as $group)
+                        <div class="option-row">
+                            <label>{{ $group->name }}</label>
+                            <select name="options[]">
+                                <option value="">-- Tidak memilih {{ strtolower($group->name) }} --</option>
+                                @foreach ($group->options as $option)
+                                    <option value="{{ $option->id }}">
+                                        {{ $option->name }} (+{{ number_format($option->additional_price, 0, ',', '.') }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
 
-        <button class="add-to-cart-button">Tambah Ke Keranjang</button>
+            <button type="submit" class="add-to-cart-button">Tambah Ke Keranjang</button>
+        </form>
+
 
         <div class="product-description-toggle">
             <div class="product-description-header collapsed" onclick="toggleDescription(this)">
@@ -401,7 +422,7 @@
     </div>
 </div>
 
-<div class="review-section">
+{{-- <div class="review-section">
     <h2>Ulasan Pembeli</h2>
     <div class="review-cards-container">
         <div class="review-card">
@@ -437,7 +458,7 @@
         </div>
 
         </div>
-</div>
+</div> --}}
 
 
 @include('components.footer')

@@ -20,6 +20,8 @@
         .logo-container {
             display: flex;
             align-items: center;
+            text-decoration: none;
+            color: inherit;
         }
 
         .logo-container img {
@@ -136,21 +138,21 @@
 <body>
 
     <div class="navbar">
-        <div class="logo-container">
+        <a class="logo-container" href="/">
             <img src="{{ asset('images/uec.png') }}" alt="Logo UEC">
             <div class="logo">
                 Ukrida E Commerce
             </div>
-        </div>
+        </a>
         <form action="{{ route('search') }}" method="GET" class="search-bar">
             <input type="text" name="q" id="searchInput" placeholder="Cari di Sini" value="{{ request('q') }}">
             <button type="button" class="clear-btn" onclick="clearSearch()">✖</button>
         </form>
 
         <div class="nav-buttons">
-             <a href="daftar_transaksi.php" class="nav-button">Transaksi</a>
-            <a href="keranjang.php" class="nav-button">Keranjang</a>
-            <a href="favorit.php" class="nav-button">Favorit</a>
+             <a href="{{ route('transaction') }}" class="nav-button">Transaksi</a>
+            <a href="{{ route('cart') }}" class="nav-button">Keranjang</a>
+            {{-- <a href="favorit.php" class="nav-button">Favorit</a> --}}
             <button class="logout-button">Logout</button>
         </div>
     </div>
