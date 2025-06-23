@@ -65,8 +65,8 @@
         <h1>403</h1>
         <h2>Akses Ditolak</h2>
         <p>Waduh... kamu gak punya izin buat masuk ke sini 😵‍💫</p>
-        <a>
-            <button href="/">Balik ke Home</button>
+        <a href="/">
+            <button>Balik ke Home</button>
         </a>
 
     </div>

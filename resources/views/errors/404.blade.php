@@ -65,8 +65,8 @@
         <h1>404</h1>
         <h2>Halaman Tidak Ditemukan</h2>
         <p>Ups! Kayaknya halaman yang kamu cari gak ada...</p>
-        <a>
-            <button href="/">Balik ke Home</button>
+        <a href="/">
+            <button>Balik ke Home</button>
         </a>
 
     </div>
