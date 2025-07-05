@@ -26,7 +26,7 @@ class ProductController extends Controller
 
     public function detailProduct($id)
     {
-        $product = Product::with(['optionGroups.options', 'seller.sellerRequest'])->findOrFail($id);
+        $product = Product::with(['optionGroups.options', 'seller.DetailSeller'])->findOrFail($id);
         return view('product-detail', compact('product'));
     }
 

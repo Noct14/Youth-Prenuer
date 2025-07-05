@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('option_groups', function (Blueprint $table) {
@@ -18,12 +15,10 @@ return new class extends Migration
             $table->boolean('is_required')->default(false);
             $table->boolean('is_multiple')->default(false);
             $table->timestamps();
+
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('option_groups');

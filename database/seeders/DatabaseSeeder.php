@@ -5,19 +5,97 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'user 1',
+            'email' => 'user1@example.com',
+            'password' => Hash::make('123'),
+            'role' => 'user',
+        ]);
+        User::factory()->create([
+            'name' => 'seller 1',
+            'email' => 'seller1@example.com',
+            'password' => Hash::make('123'),
+            'role' => 'seller',
+        ]);
+        User::factory()->create([
+            'name' => 'uec',
+            'email' => 'uec@example.com',
+            'password' => Hash::make('123'),
+            'role' => 'uec',
+        ]);
+
+        DB::table('categories')->insert([
+            [
+                'id' => 1,
+                'name' => 'Makanan',
+                'slug' => Str::slug('Makanan'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 2,
+                'name' => 'Minuman',
+                'slug' => Str::slug('Minuman'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        DB::table('products')->insert([
+            [
+                'id' => 1,
+                'category_id' => 1,
+                'seller_id' => 2,
+                'product_name' => 'Bubur Ayam',
+                'price' => 15000,
+                'description' => 'Bubur ayam dengan topping ayam suwir, cakwe, dan sambal.',
+                'stock' => 10,
+                'image_url' => 'https://example.com/images/bubur_ayam.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],[
+                'id' => 2,
+                'category_id' => 2,
+                'seller_id' => 2,
+                'product_name' => 'Kopi Susu',
+                'price' => 8000,
+                'description' => 'Kopi susu dengan rasa yang kaya dan aroma yang menggoda.',
+                'stock' => 10,
+                'image_url' => 'https://example.com/images/kopi_susu.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        DB::table('detail_sellers')->insert([
+            [
+                'id' => 1,
+                'user_id' => 2,
+                'store_name' => 'Bakmi Ayam Bang Jali',
+                'phone' => '081234567890',
+                'store_address' => 'Jl. Mie Ayam No. 10, Jakarta',
+                'status' => 'approved',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'id' => 2,
+                'user_id' => 1,
+                'store_name' => 'Warung Es Teh Manis',
+                'phone' => '082345678901',
+                'store_address' => 'Jl. Minuman Segar No. 5, Bandung',
+                'status' => 'rejected',
+                'created_at' => '2025-07-05 09:00:00',
+                'updated_at' => '2025-07-05 09:00:00',
+            ],
         ]);
     }
 }

@@ -1,4 +1,4 @@
-@include('components.header_buyer')
+@livewire('navbar')
 
 <title>Daftar Transaksi</title>
 <style>

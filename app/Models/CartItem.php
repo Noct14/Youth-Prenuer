@@ -21,7 +21,7 @@ class CartItem extends Model
         $optionPrice = $this->options->sum('additional_price');
         return ($basePrice + $optionPrice) * $this->quantity;
     }
-
+    //relation
     public function options()
     {
         return $this->belongsToMany(Option::class, 'cart_item_options');

@@ -1,4 +1,4 @@
-@include('components.header_buyer')
+@livewire('navbar')
 
 <title>Detail Produk</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -367,7 +367,7 @@
     <div class="product-details-section">
         <h1>{{ $product->product_name }}</h1>
         <div class="price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-        <div class="store-name">{{ $product->seller->sellerRequest->store_name }}</div>
+        <div class="store-name">{{ $product->seller->DetailSeller->store_name }}</div>
 
         @if (session('success'))
             <div class="alert alert-success" style="padding: 10px; margin-bottom: 10px; background-color: #d4edda; color: #155724;">

@@ -34,22 +34,17 @@ class AuthController
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
+        $remember = $request->boolean('remember', false);
 
-        if (!Auth::attempt($credentials)) {
-            return response()->json(['message' => 'login gagal'], 401);
+        if (!Auth::attempt($credentials, $remember)) {
+            return back()->withErrors([
+                'email' => 'Email atau password salah.',
+            ]);
         }
 
-        $user = Auth::user();
+        $request->session()->regenerate();
 
-        $user->tokens()->delete();
-
-        $token = $user->createToken('auth_token', ['*'], now()->addHour())->plainTextToken;
-
-        return response()->json([
-            'message' => 'login sukses',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ]);
+        return redirect()->intended('/dashboard'); // Ganti dengan route tujuanmu
     }
 
     public function logout(Request $request)

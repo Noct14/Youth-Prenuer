@@ -1,13 +1,15 @@
-@include('components.header_buyer')
-
+@livewire('navbar')
 @section('title', 'Home')
 <head>
+    @livewireStyles
     <meta charset="utf-8">
     <title>Home</title>
 </head>
 
 
 <style>
+    @livewireScripts
+
     /* General body styling */
     body {
         font-family: Arial, sans-serif;
@@ -84,7 +86,6 @@
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 </style>
-
 <div class="warning-section">
     <h1>PERINGATAN!</h1>
     <p>Website ini bisa bikin laper mata dan dompet.</p>
@@ -95,7 +96,10 @@
     <h2>Kategori Pilihan:</h2>
     <div class="category-container">
         @foreach($categories as $category)
-            <a href="{{ route('category.show', $category->slug) }}" class="category-card">
+            {{-- <a href="{{ route('category.show', $category->slug) }}" class="category-card">
+                {{ $category->name }}
+            </a> --}}
+            <a href="/category/{{ $category['slug'] }}" class="category-card">
                 {{ $category->name }}
             </a>
         @endforeach

@@ -13,6 +13,7 @@ class OrderItemOption extends Model
 
     public $timestamps = false;
 
+    //relation
     public function orderItem()
     {
         return $this->belongsTo(OrderItem::class);
